@@ -1,0 +1,11 @@
+from pathlib import Path
+import pandas as pd
+import csv
+
+csv_path = Path(__file__).with_name("cams.csv")
+df = pd.read_csv(csv_path,sep=";",comment="#")
+
+#useful columns: Observation Period, GHI, BHI, DHI, BNI, RELIABILITY
+
+print((df.columns.tolist()))
+#print(df["GHI"].to_list())
