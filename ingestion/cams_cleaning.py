@@ -14,7 +14,8 @@ clean_cams_df = clean_cams_df.rename(columns={"Observation period": "timestamp",
                                                 "DHI": "cams_dhi",
                                                 "BNI": "cams_bni",
                                                 "Reliability": "cams_reliability"})
+#removing second half of the timestamp and replacing it with ":00" to match openmeteo timestamp format
 clean_cams_df["timestamp"] = clean_cams_df["timestamp"].str.split("/").str[0]
 clean_cams_df["timestamp"] = clean_cams_df["timestamp"].str.split(":").str[0] + ":00"
-clean_cams_df.to_csv("cams_clean.csv", index=False)
+clean_cams_df.to_csv("cams_cleaned.csv", index=False)
 print((clean_cams_df.columns.tolist()))
