@@ -15,5 +15,6 @@ clean_cams_df = clean_cams_df.rename(columns={"Observation period": "timestamp",
                                                 "BNI": "cams_bni",
                                                 "Reliability": "cams_reliability"})
 clean_cams_df["timestamp"] = clean_cams_df["timestamp"].str.split("/").str[0]
+clean_cams_df["timestamp"] = clean_cams_df["timestamp"].str.split(":").str[0] + ":00"
 clean_cams_df.to_csv("cams_clean.csv", index=False)
 print((clean_cams_df.columns.tolist()))

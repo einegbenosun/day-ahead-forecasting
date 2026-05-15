@@ -1,4 +1,4 @@
 git status
 git add .
 git commit -m "aligning cams timestamp with open meteo"
-git push
+git push origin main
