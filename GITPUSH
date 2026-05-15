@@ -1,4 +1,4 @@
 git status
 git add .
-git commit -m "merging cams and open meteo"
+git commit -m "load merged.csv"
 git push origin main

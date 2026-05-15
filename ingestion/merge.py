@@ -12,3 +12,4 @@ open_meteo_df = pd.read_csv(open_meteo_path)
 
 merged_df = pd.merge(open_meteo_df, cams_df, on="timestamp", how="inner")
 merged_df.to_csv("merged_data.csv", index=False)
+print(merged_df.columns.tolist())
