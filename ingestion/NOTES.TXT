@@ -1,1 +1,2 @@
 In the cams.csv, remove the # before the row of headers
+in open_meteo.csv, remove first 3 lines
