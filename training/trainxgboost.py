@@ -36,9 +36,11 @@ mae = mean_absolute_error(y_test, model.predict(X_test))
 #print(f"Mean Absolute Error: {mae}")
 feature_importance = []
 feature_importance.append(model.feature_importances_)
+print(f"RMSE: {rmse}\n")
+print(f"MAE: {mae}\n")
 print("Feature importance:")
 for i in features.columns.tolist():
     print(f"{features[i].name}: {feature_importance[0][features.columns.get_loc(i)]}")
     
 
-joblib.dump(model, "xgboost_model.joblib")
+#joblib.dump(model, "xgboost_model.joblib")
