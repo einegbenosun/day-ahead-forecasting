@@ -1,9 +1,13 @@
 import pandas as pd
 import pathlib as path
+import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import root_mean_squared_error
 from sklearn.metrics import mean_absolute_error
+
+
+
 
 csv_path = path.Path(__file__).with_name("merged_data.csv")
 df = pd.read_csv(csv_path,sep=",")
@@ -43,4 +47,5 @@ feature_importance.append(model.feature_importances_)
 print("Feature importance:")
 for i in features.columns.tolist():
     print(f"{features[i].name}: {feature_importance[0][features.columns.get_loc(i)]}")
-    
+
+joblib.dump(model, "random_forest_model.joblib")

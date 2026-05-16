@@ -1,5 +1,6 @@
 import pandas as pd
 import pathlib as path
+import joblib 
 from sklearn.model_selection import train_test_split
 from xgboost import XGBRegressor
 
@@ -39,3 +40,5 @@ print("Feature importance:")
 for i in features.columns.tolist():
     print(f"{features[i].name}: {feature_importance[0][features.columns.get_loc(i)]}")
     
+
+joblib.dump(model, "xgboost_model.joblib")
