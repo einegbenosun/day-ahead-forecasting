@@ -31,5 +31,5 @@ Feature importance:
 - direct_normal_irradiance: 0.01056690700352192
 - global_tilted_irradiance: 0.018089842051267624
 - sunshine_duration: 0.026330491527915
-Hour: 0.06084786355495453
-MONTH: 0.021408451721072197 
+- Hour: 0.06084786355495453
+- MONTH: 0.021408451721072197 
