@@ -24,6 +24,10 @@ R-squared score(TEST): 0.9006635158509246
 
 R-squared score(TRAIN): 0.9391272959723326
 
+RMSE: 52.33351104970273
+
+MAE: 24.814710873317896
+
 Feature importance:
 - temperature_2m: 0.006192135624587536
 - relative_humidity_2m: 0.008765117265284061
