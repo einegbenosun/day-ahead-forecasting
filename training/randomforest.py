@@ -1,13 +1,9 @@
-import csv
 import pandas as pd
 import pathlib as path
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import root_mean_squared_error
 from sklearn.metrics import mean_absolute_error
-from matplotlib import pyplot as plt
-import numpy as np
-
 
 csv_path = path.Path(__file__).with_name("merged_data.csv")
 df = pd.read_csv(csv_path,sep=",")
@@ -27,7 +23,7 @@ x = features
 y = target
 
 #https://stats.stackexchange.com/questions/568897/random-forest-regressor-accuracy-reduces-when-the-input-data-is-not-shuffled
-X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.2, random_state=42, shuffle=False)
+X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.2, random_state=100, shuffle=False)
 model = RandomForestRegressor()
 
 #https://stackoverflow.com/questions/17197492/is-there-a-library-function-for-root-mean-square-error-rmse-in-python
@@ -38,7 +34,8 @@ model.fit(X_train, y_train)
 rmse = root_mean_squared_error(y_test, model.predict(X_test))
 mae = mean_absolute_error(y_test, model.predict(X_test))
 
-print(f"R-squared score: {model.score(X_test, y_test)}")
+print(f"R-squared score(TEST): {model.score(X_test, y_test)}")
+print(f"R-squared score(TRAIN): {model.score(X_train, y_train)}\n")
 print(f"RMSE: {rmse}\n")
 print(f"MAE: {mae}\n")
 feature_importance = []

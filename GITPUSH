@@ -1,4 +1,4 @@
 git status
 git add .
-git commit -m "renaming training to random forest"
+git commit -m "xgboost"
 git push origin main
