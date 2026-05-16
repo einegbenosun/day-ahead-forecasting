@@ -22,6 +22,8 @@ merged_df["Hour"] = split[1].str.split(":").str[0]
 merged_df["Date"] = split[0]
 merged_df["Date"] = pd.to_datetime(merged_df["Date"])
 merged_df = merged_df.drop(columns=["timestamp"])
+
+#https://stackoverflow.com/questions/77881238/using-datetime-in-machine-learning
 merged_df['YEAR'] = merged_df['Date'].dt.year
 merged_df['MONTH'] = merged_df['Date'].dt.month
 merged_df['DAY'] = merged_df['Date'].dt.day
