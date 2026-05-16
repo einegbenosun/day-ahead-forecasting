@@ -1,4 +1,4 @@
 git status
 git add .
-git commit -m "random forest: organising features, returning r_score, mae and rmse"
+git commit -m "renaming training to random forest"
 git push origin main
