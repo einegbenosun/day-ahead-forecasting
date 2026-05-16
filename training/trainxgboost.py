@@ -21,7 +21,7 @@ print(features.columns.tolist())
 
 X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=.2, random_state=100, shuffle=False)
 #https://www.kaggle.com/code/prashant111/a-guide-on-xgboost-hyperparameters-tuning
-model = XGBRegressor(n_estimators=1200, learning_rate=0.008, max_depth=5, alpha=6)
+model = XGBRegressor(n_estimators=1500, learning_rate=0.008, max_depth=5, alpha=6)
 model.fit(X_train, y_train)
 # make predictions
 
