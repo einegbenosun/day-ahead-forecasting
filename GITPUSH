@@ -1,6 +1,6 @@
 git status
 git add .
-git commit -m "flask set up"
+git commit -m "flask and request from open meteo"
 git push origin main
 
 

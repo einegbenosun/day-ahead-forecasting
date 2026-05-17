@@ -16,10 +16,10 @@ df = pd.read_csv(csv_path,sep=",")
 target_variable ="cams_ghi"
 from_cams = [target_variable,"cams_bhi", "cams_dhi", "cams_bni", "cams_reliability"]
 target = df[target_variable]
-directly_relevant_features = ["shortwave_radiation","global_tilted_irradiance"]
-relevant_features = ["is_day","YEAR","direct_radiation","shortwave_radiation","diffuse_radiation","direct_normal_irradiance","global_tilted_irradiance","shortwave_radiation"]
-noise = ["DAY","YEAR"]
-features = df.drop(columns= from_cams)
+directly_relevant_features = ["diffuse_radiation"]
+relevant_features = ["DAY","YEAR","is_day","direct_radiation","shortwave_radiation","diffuse_radiation","direct_normal_irradiance","global_tilted_irradiance","shortwave_radiation"]
+noise = ["YEAR","is_day","DAY"]
+features = df.drop(columns= from_cams + directly_relevant_features + noise)
 
 print(features.columns.tolist())
 

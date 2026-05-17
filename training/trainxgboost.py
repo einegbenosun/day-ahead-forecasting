@@ -14,7 +14,7 @@ target_variable ="cams_ghi"
 from_cams = [target_variable,"cams_bhi", "cams_dhi", "cams_bni", "cams_reliability"]
 target = df[target_variable]
 directly_relevant_features = ["diffuse_radiation"]
-relevant_features = ["DAY","YEAR","is_day","direct_radiation","shortwave_radiation","diffuse_radiation","direct_normal_irradiance","global_tilted_irradiance","shortwave_radiation"]
+#relevant_features = ["DAY","YEAR","is_day","direct_radiation","shortwave_radiation","diffuse_radiation","direct_normal_irradiance","global_tilted_irradiance","shortwave_radiation"]
 noise = ["YEAR","is_day","DAY"]
 features = df.drop(columns= from_cams + directly_relevant_features + noise)
 
@@ -41,6 +41,5 @@ print(f"MAE: {mae}\n")
 print("Feature importance:")
 for i in features.columns.tolist():
     print(f"{features[i].name}: {feature_importance[0][features.columns.get_loc(i)]}")
-    
-print(model.accuracy_score(X_test,y_test))
+
 #joblib.dump(model, "xgboost_model.joblib")
