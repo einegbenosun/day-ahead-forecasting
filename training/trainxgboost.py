@@ -42,5 +42,5 @@ print("Feature importance:")
 for i in features.columns.tolist():
     print(f"{features[i].name}: {feature_importance[0][features.columns.get_loc(i)]}")
     
-
+print(model.accuracy_score(X_test,y_test))
 #joblib.dump(model, "xgboost_model.joblib")

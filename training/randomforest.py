@@ -19,7 +19,7 @@ target = df[target_variable]
 directly_relevant_features = ["shortwave_radiation","global_tilted_irradiance"]
 relevant_features = ["is_day","YEAR","direct_radiation","shortwave_radiation","diffuse_radiation","direct_normal_irradiance","global_tilted_irradiance","shortwave_radiation"]
 noise = ["DAY","YEAR"]
-features = df.drop(columns= directly_relevant_features + from_cams + noise)
+features = df.drop(columns= from_cams)
 
 print(features.columns.tolist())
 

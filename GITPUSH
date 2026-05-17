@@ -1,4 +1,11 @@
 git status
 git add .
-git commit -m "moving baseline"
+git commit -m "flask set up"
 git push origin main
+
+
+
+
+git pull origin main --allow-unrelated-histories
+git push origin main
+git status

@@ -1,6 +1,5 @@
 from pathlib import Path
 import pandas as pd
-import csv
 
 csv_path = Path(__file__).with_name("open_meteo.csv")
 df = pd.read_csv(csv_path,sep=",")
