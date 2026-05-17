@@ -4,8 +4,6 @@ import openmeteo_requests
 import pandas as pd
 import requests_cache
 from retry_requests import retry
-import numpy
-
 
 
 
@@ -106,8 +104,8 @@ import requests
 api_url = "http://127.0.0.1:5000/xgbpredict"
 time = hourly_data["date"]
 
-list = []
-for i in range(1,24):
+predictions = []
+for i in range(24):
     row = df.iloc[i].to_dict()
 
     row["Hour"] = int(row["date"].hour)
@@ -120,10 +118,13 @@ for i in range(1,24):
     
 
     api_response = requests.post(api_url, json=row)
+    #print(row)
+    
     print(api_response.json()) 
-    list.append(api_response.json())
+    predictions.append(api_response.json())
+	
+	
 
-print(list)
-total = (sum(list))
-print(len(list))
+print(predictions)
+total = (sum(predictions))
 print(total)

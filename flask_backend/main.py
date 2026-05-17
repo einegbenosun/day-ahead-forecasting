@@ -21,7 +21,7 @@ def xgbpredict():
 
     try:
         request_data = request.get_json()
-        required_features = {'temperature_2m',
+        required_features = ['temperature_2m',
                             'relative_humidity_2m',
                             'wind_speed_10m',
                             'shortwave_radiation',
@@ -30,7 +30,7 @@ def xgbpredict():
                             'global_tilted_irradiance',
                             'sunshine_duration',
                             'Hour',
-                            'MONTH'}
+                            'MONTH']
 
 
         input_data = [[request_data[feature] for feature in required_features]]
@@ -43,17 +43,24 @@ def xgbpredict():
             return jsonify({"error": "Missing required features"}), 400
         
         xgb_prediction = xgb_model.predict(input_data)
-        if xgb_prediction < 0:
-            xgb_prediction = float(0)
-
-#avoid negative values by setting 0 for no shortwave radiation
+        
+#slight feature engineering
+#avoid negative values by setting 0 when there is no irradiance
         prediction = float(xgb_prediction[0])
-        if request_data["shortwave_radiation"] <= 0:
+        irradiance_sum =(
+            request_data["shortwave_radiation"] +
+            request_data["direct_radiation"] +
+            request_data["diffuse_radiation"] +
+            request_data["direct_normal_irradiance"] +
+            request_data["global_tilted_irradiance"]
+        )
+        if irradiance_sum <= 0:
             prediction = float(0)
 
-        response = float(prediction)
+        
+        prediction = max(0.0,prediction)
 
-        return jsonify(response), 200
+        return jsonify(prediction), 200
     
     
 
@@ -61,11 +68,11 @@ def xgbpredict():
         return jsonify({"error": str(e)}), 500
     
 @app.route("/rfpredict", methods=["POST"])
-def rfpredict():
+def rfpredict(): 
 
     try:
         request_data = request.get_json()
-        required_features = {'temperature_2m',
+        required_features = ['temperature_2m',
                             'relative_humidity_2m',
                             'wind_speed_10m',
                             'shortwave_radiation',
@@ -74,7 +81,7 @@ def rfpredict():
                             'global_tilted_irradiance',
                             'sunshine_duration',
                             'Hour',
-                            'MONTH'}
+                            'MONTH']
 
 
         input_data = [[request_data[feature] for feature in required_features]]
@@ -86,12 +93,21 @@ def rfpredict():
         if not all(feature in required_features for feature in required_features):
             return jsonify({"error": "Missing required features"}), 400
         
+        
         rf_prediction = rf_model.predict(input_data)
         prediction = float(rf_prediction[0])
-        if request_data["shortwave_radiation"] <= 0:
+        irradiance_sum =(
+            request_data["shortwave_radiation"] +
+            request_data["direct_radiation"] +
+            request_data["diffuse_radiation"] +
+            request_data["direct_normal_irradiance"] +
+            request_data["global_tilted_irradiance"]
+        )
+        if irradiance_sum <= 0:
             prediction = float(0)
+        prediction = max(0.0,prediction)
 
-        response = float(prediction)
+        response = prediction
 
         return jsonify(response), 200
     
