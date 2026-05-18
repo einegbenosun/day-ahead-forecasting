@@ -3,10 +3,10 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-with open("training/models/xgboost_model.joblib", "rb") as f:
+with open("../training/models/xgboost_model.joblib", "rb") as f:
     xgb_model = joblib.load(f)
 
-with open("training/models/random_forest_model.joblib", "rb") as f:
+with open("../training/models/random_forest_model.joblib", "rb") as f:
     rf_model = joblib.load(f)
 
 

@@ -4,8 +4,12 @@ import openmeteo_requests
 import pandas as pd
 import requests_cache
 from retry_requests import retry
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
-
+app = Flask(__name__)
+#https://stackoverflow.com/questions/25594893/how-to-enable-cors-in-flask
+CORS(app)
 
 # Setup the Open-Meteo API client with cache and retry on error
 cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
@@ -25,9 +29,9 @@ responses = openmeteo.weather_api(url, params = params)
 
 # Process first location. Add a for-loop for multiple locations or weather models
 response = responses[0]
-print(f"Coordinates: {response.Latitude()}°N {response.Longitude()}°E")
-print(f"Elevation: {response.Elevation()} m asl")
-print(f"Timezone difference to GMT+0: {response.UtcOffsetSeconds()}s")
+#print(f"Coordinates: {response.Latitude()}°N {response.Longitude()}°E")
+#print(f"Elevation: {response.Elevation()} m asl")
+#print(f"Timezone difference to GMT+0: {response.UtcOffsetSeconds()}s")
 
 # Process hourly data. The order of variables needs to be the same as requested.
 hourly = response.Hourly()
@@ -101,7 +105,7 @@ df = pd.DataFrame(data = hourly_data)
 
 import requests
 
-api_url = "http://127.0.0.1:5000/xgbpredict"
+api_url = "http://127.0.0.1:5000/rfpredict"
 time = hourly_data["date"]
 
 predictions = []
@@ -120,11 +124,26 @@ for i in range(24):
     api_response = requests.post(api_url, json=row)
     #print(row)
     
-    print(api_response.json()) 
+    #print(api_response.json()) 
     predictions.append(api_response.json())
 	
-	
+@app.route("/predict", methods=["GET"])	
+def predict():
+    return jsonify(predictions), 200
 
-print(predictions)
-total = (sum(predictions))
-print(total)
+@app.route("/total", methods=["GET"])
+def total_prediction():
+    total = (sum(predictions))
+    return jsonify(total), 200
+
+@app.route("/params", methods=["GET"])
+def loc():
+    return jsonify(params), 200
+    
+
+#print(predictions)
+#print(total)
+
+if __name__ == "__main__":
+    app.run(debug=True,port=5001)
+    
