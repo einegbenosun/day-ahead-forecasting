@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import root_mean_squared_error
 from sklearn.metrics import mean_absolute_error
-
+from matplotlib import pyplot
 
 
 
@@ -49,3 +49,16 @@ for i in features.columns.tolist():
     print(f"{features[i].name}: {feature_importance[0][features.columns.get_loc(i)]}")
 
 #joblib.dump(model, "random_forest_model.joblib")
+
+
+#https://scikit-learn.org/stable/auto_examples/inspection/plot_permutation_importance.html
+importance = pd.Series(
+    model.feature_importances_,
+    index=features.columns
+).sort_values()
+
+#importance.plot(kind="barh", figsize=(9, 6), title="RandomForest Feature Importances")
+
+#pyplot.xlabel("Importance")
+#pyplot.tight_layout()
+#pyplot.show()
