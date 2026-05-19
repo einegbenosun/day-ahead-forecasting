@@ -72,6 +72,7 @@ hourly_data = {
 	)
 }
 
+
 hourly_data["temperature_2m"] = hourly_temperature_2m
 hourly_data["relative_humidity_2m"] = hourly_relative_humidity_2m
 hourly_data["wind_speed_10m"] = hourly_wind_speed_10m
@@ -105,35 +106,48 @@ df = pd.DataFrame(data = hourly_data)
 
 import requests
 
-api_url = "http://127.0.0.1:5000/rfpredict"
+api_url = "http://main:5000/rfpredict"
 time = hourly_data["date"]
 
-predictions = []
-for i in range(24):
-    row = df.iloc[i].to_dict()
+kwp = 1000 #to get W/m² to KW/M
 
-    row["Hour"] = int(row["date"].hour)
-    row["DAY"] = int(row["date"].day)
-    row["MONTH"] = int(row["date"].month)
-    row["YEAR"] = int(row["date"].year)
+def get_predictions():
+    predictions = []
+    for i in range(24):
+        row = df.iloc[i].to_dict()
 
-    del row["date"]
+        row["Hour"] = int(row["date"].hour)
+        row["DAY"] = int(row["date"].day)
+        row["MONTH"] = int(row["date"].month)
+        row["YEAR"] = int(row["date"].year)
 
-    
+        del row["date"]
 
-    api_response = requests.post(api_url, json=row)
-    #print(row)
-    
-    #print(api_response.json()) 
-    predictions.append(api_response.json())
-	
+        
+
+        api_response = requests.post(api_url, json=row)
+        api_response = api_response
+        #print(row)
+        
+        #print(api_response.json()) 
+        prediction = api_response.json()
+        prediction = float(prediction) / 1000 * 0.85 #assumes a pv panel loses 15% of solar irradiance
+        
+        predictions.append(prediction)
+    return predictions
+
+@app.route("/date", methods=["GET"])
+def today():
+    first_date = df.iloc[0]["date"]
+    return jsonify(first_date.strftime("%d/%m/%Y")), 200
+
 @app.route("/predict", methods=["GET"])	
 def predict():
-    return jsonify(predictions), 200
+    return jsonify(get_predictions()), 200
 
 @app.route("/total", methods=["GET"])
 def total_prediction():
-    total = (sum(predictions))
+    total = (sum(get_predictions()))
     return jsonify(total), 200
 
 @app.route("/params", methods=["GET"])
@@ -144,6 +158,11 @@ def loc():
 #print(predictions)
 #print(total)
 
+@app.route("/")
+def home():
+    return "Photovoltaic Day-Ahead Forecasting API"
+
+
 if __name__ == "__main__":
-    app.run(debug=True,port=5001)
+    app.run(host="0.0.0.0",port=5001)
     

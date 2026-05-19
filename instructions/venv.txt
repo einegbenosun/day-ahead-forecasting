@@ -1,3 +1,4 @@
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\.venv\Scripts\Activate.ps1
 python .\flask_backend\main.py
+python -m pip install -r requirements.txt

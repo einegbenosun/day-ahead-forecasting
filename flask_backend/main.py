@@ -3,10 +3,10 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-with open("../training/models/xgboost_model.joblib", "rb") as f:
+with open("models/xgboost_model.joblib", "rb") as f:
     xgb_model = joblib.load(f)
 
-with open("../training/models/random_forest_model.joblib", "rb") as f:
+with open("models/random_forest_model.joblib", "rb") as f:
     rf_model = joblib.load(f)
 
 
@@ -118,5 +118,5 @@ def rfpredict():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
     

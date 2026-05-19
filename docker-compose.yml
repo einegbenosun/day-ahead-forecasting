@@ -1,0 +1,26 @@
+#https://stackoverflow.com/questions/65622477/what-is-context-in-docker-compose
+services:
+  main:
+    build:
+      context: .
+      dockerfile: Dockerfile.main
+    ports: 
+      - "5000:5000"
+    
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports: 
+      - "5001:5001"
+    depends_on: 
+      - main
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports: 
+      - "5173:5173"
+    depends_on: 
+      - api

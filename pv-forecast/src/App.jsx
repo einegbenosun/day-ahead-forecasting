@@ -1,134 +1,80 @@
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
-import axios from "axios"
+import { useState } from "react";
+import "./App.css";
+import axios from "axios";
 
 function App() {
-  const [count, setCount] = useState(0);
-/*https://www.youtube.com/watch?v=ctQMqqEo4G8*/
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const fetchAPI = async () =>{
-    const response = await axios.get("http://127.0.0.1:5001/params");
-    console.log(response.data);
+  const fetchAPI = async () => {
+    setLoading(true);
+
+    const paramsResponse = await axios.get("http://localhost:5001/params");
+    const predictionsResponse = await axios.get("http://localhost:5001/predict");
+    const totalResponse = await axios.get("http://localhost:5001/total");
+    const dateResponse = await axios.get("http://localhost:5001/date");
+
+    setData({
+      longitude: paramsResponse.data.longitude,
+      latitude: paramsResponse.data.latitude,
+      predictions: predictionsResponse.data,
+      total: totalResponse.data,
+      date: dateResponse.data,
+    
+    });
+
+    setLoading(false);
   };
 
-  useEffect(() => {
-    fetchAPI()
-  },[])
-    
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
+    <main className="page">
+      <div className="sun"></div>
+
+      <h1>PV Forecast Dashboard</h1>
+      <p>Day-ahead photovoltaic forecasting using live Open-Meteo data.</p>
+
+      <button onClick={fetchAPI}>
+        {loading ? "Loading..." : "Access Forecast Data"}
+      </button>
+
+      {data && (
+        <div className="card">
+          <h2>Daily Forecast Summary</h2>
           <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+            <strong>Date:</strong> {data.date}
           </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
 
-      <div className="ticks"></div>
+          <p>
+            <strong>Location:</strong> {data.latitude}, {data.longitude}
+          </p>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        
+          <p>
+            <strong>Total forecast:</strong> {Number(data.total).toFixed(2)}kWp
+          </p>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+          <p>
+            <strong>Average hourly forecast:</strong>{" "}
+            {Number(data.total / 24).toFixed(2)}
+            kWp
+
+          </p>
+
+          <h3>24-Hour Predictions</h3>
+          <div className="prediction-grid">
+            {data.predictions.map((value, index) => (
+              <div className="prediction-box" key={index}>
+                <span>Hour {index}</span>
+                <strong>{Number(value).toFixed(2)}</strong>
+              </div>
+            ))}
+          </div>
+        </div>
+
+
+      )}
+    </main>
+  );
 }
 
-export default App
+export default App;

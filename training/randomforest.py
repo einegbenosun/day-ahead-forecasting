@@ -52,10 +52,10 @@ for i in features.columns.tolist():
 
 
 #https://scikit-learn.org/stable/auto_examples/inspection/plot_permutation_importance.html
-importance = pd.Series(
-    model.feature_importances_,
-    index=features.columns
-).sort_values()
+#importance = pd.Series(
+    #model.feature_importances_,
+    #index=features.columns
+#).sort_values()
 
 #importance.plot(kind="barh", figsize=(9, 6), title="RandomForest Feature Importances")
 
