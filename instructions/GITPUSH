@@ -1,6 +1,6 @@
 git status
 git add .
-git commit -m "connecting flask to front end"
+git commit -m "configuring docker compose and connections"
 git push origin main
 
 

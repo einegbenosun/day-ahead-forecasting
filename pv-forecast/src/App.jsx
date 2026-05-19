@@ -53,18 +53,11 @@ function App() {
             <strong>Total forecast:</strong> {Number(data.total).toFixed(2)}kWp
           </p>
 
-          <p>
-            <strong>Average hourly forecast:</strong>{" "}
-            {Number(data.total / 24).toFixed(2)}
-            kWp
-
-          </p>
-
           <h3>24-Hour Predictions</h3>
           <div className="prediction-grid">
             {data.predictions.map((value, index) => (
               <div className="prediction-box" key={index}>
-                <span>Hour {index}</span>
+                <span>{index}:00</span>
                 <strong>{Number(value).toFixed(2)}</strong>
               </div>
             ))}

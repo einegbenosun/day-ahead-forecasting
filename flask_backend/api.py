@@ -160,7 +160,7 @@ def loc():
 
 @app.route("/")
 def home():
-    return "Photovoltaic Day-Ahead Forecasting API"
+    return "Middle Request API"
 
 
 if __name__ == "__main__":
