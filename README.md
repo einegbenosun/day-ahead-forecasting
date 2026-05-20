@@ -10,7 +10,7 @@ The project runs with Docker Compose and contains three services:
 | 'api'| Flask middleman API that fetches weather data and calls the model API| '5001'|
 |'frontend'| React/Vite dashboard |'5173'|
 
-'''text
+
 React Frontend
 http://localhost:5173
         |
