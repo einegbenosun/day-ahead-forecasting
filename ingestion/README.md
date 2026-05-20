@@ -15,12 +15,15 @@ To modify the project for a different location:
 
 Ensure both date ranges are the same - the current system uses 2 years of data.
 
-#Data Cleaning
+# Data Cleaning
 1. Run files: `open_meteo_cleaning.py` and `cams_cleaning.py`
 2. This will generate `open_meteo_cleaned.csv` and `cams_cleaned.csv`.
 3. Replace the files in `/csv` with these generated files and run `merge.py` to created a cleaned `merged_data.csv`
 
+
 Once the merged csv has been created, copy and replace the file in `training/` in the root folder to train with the updated datasets.
 Instructions for training can be found in: `training/README.md`
+
+Note: When requesting training of live data, you must also change the latitude and longitude values of `flask_backend/api`
 
    
