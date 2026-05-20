@@ -18,7 +18,7 @@ Ensure both date ranges are the same - the current system uses 2 years of data.
 #Data Cleaning
 1. Run files: `open_meteo_cleaning.py` and `cams_cleaning.py`
 2. This will generate `open_meteo_cleaned.csv` and `cams_cleaned.csv`.
-3. Replace the files in `/csv` with these generated files and run `merge.py` to created a cleaned `merged.csv`
+3. Replace the files in `/csv` with these generated files and run `merge.py` to created a cleaned `merged_data.csv`
 
 Once the merged csv has been created, copy and replace the file in `training/` in the root folder to train with the updated datasets.
 Instructions for training can be found in: `training/README.md`
