@@ -30,6 +30,7 @@ The Request API returns the final forecast predictions back to React.
 
 # Requirements
 - Docker Desktop
+https://www.docker.com/products/docker-desktop/
 
 No manual setup required
 
