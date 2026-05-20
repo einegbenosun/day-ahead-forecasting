@@ -13,12 +13,10 @@ The project runs with Docker Compose and contains three services:
 
 React Frontend
 http://localhost:5173
-        |
-        V
+->
 Flask Request API
 http://localhost:5001
-        |
-        V
+->
 Main Model Flask API
 http://localhost:5000 
 
