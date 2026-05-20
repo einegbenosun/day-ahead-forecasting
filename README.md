@@ -28,13 +28,13 @@ The Request API fetches live Open-Meteo data, prepares the features, then sends 
 The main model API returns predictions to the Request API.
 The Request API returns the final forecast predictions back to React.
 
-#Requirements
+# Requirements
 - Docker Desktop
 
 No manual setup required
 
 
-#Run the Project
+# Run the Project
 `docker compose up -d --build`
 Then open the Frontend:
 `http://localhost:5173`
