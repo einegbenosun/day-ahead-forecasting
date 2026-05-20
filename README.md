@@ -1,0 +1,9 @@
+# Day-Ahead Solar PV Forecasting
+
+This project is a day-ahead photovoltaic forecasting dashboard. It uses live Open-Meteo weather forecast data,sends the processed features to a trained machine learning model API, and displays the forecast results in a React frontend.
+
+The project runs with Docker Compose and contains three services:
+
+| Service | Description | Port|
+|---|---|---|
+| 'main'|Flask model API | '5000'|
