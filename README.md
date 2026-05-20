@@ -7,3 +7,5 @@ The project runs with Docker Compose and contains three services:
 | Service | Description | Port|
 |---|---|---|
 | 'main'|Flask model API | '5000'|
+| 'api'| Flask middleman API that fetches weather data and calls the model API| '5001'|
+|'frontend'| React/Vite dashboard |'5173'|
