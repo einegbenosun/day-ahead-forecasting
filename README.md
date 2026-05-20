@@ -39,3 +39,11 @@ No manual setup required
 `docker compose up -d --build`
 Then open the Frontend:
 `http://localhost:5173`
+
+# Changing Location/Dataset
+
+The current system is configured for a fixed location using Open-Meteo forecast data and can be changed by updating the Open-Meteo latitude and longitude values.
+
+For full instructions on replacing CAMS and Open Meteo data, preparing ingestion files and adapting  to a new location, see:
+```text
+ingestion/README.md
