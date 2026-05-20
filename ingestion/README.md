@@ -24,6 +24,6 @@ Ensure both date ranges are the same - the current system uses 2 years of data.
 Once the merged csv has been created, copy and replace the file in `training/` in the root folder to train with the updated datasets.
 Instructions for training can be found in: `training/README.md`
 
-Note: When requesting training of live data, you must also change the latitude and longitude values of `flask_backend/api`
+Note: When requesting training of live data, you must also change the latitude and longitude values of `flask_backend/api.py`
 
    
