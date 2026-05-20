@@ -8,4 +8,14 @@ To modify the project for a different location:
 2. Download the CSV file and replace `open_meteo.csv` (rename downloaded file to this).
 
 # CAMS Copernicus
-1. Create a free account and submit a data request form at: [CAMS solar radiation](https://ads.atmosphere.copernicus.eu/datasets/cams-solar-radiation-timeseries?tab=download)
+1. Create a free account and submit a data request form with the same longitude and latitude locations at: [CAMS solar radiation](https://ads.atmosphere.copernicus.eu/datasets/cams-solar-radiation-timeseries?tab=download)
+2. Download the CSV and replace `cams.csv` (rename downloaded file to this).
+
+Ensure both date ranges are the same - the current system uses 2 years of data.
+
+#Data Cleaning
+1. Run files: `open_meteo_cleaning.py` and `cams_cleaning.py`
+2. This will generate `open_meteo_cleaned.csv` and `cams_cleaned.csv`.
+3. Replace the files in `/csv` with these generated files and run `merge.py` to created a cleaned `merged.csv`
+
+   
