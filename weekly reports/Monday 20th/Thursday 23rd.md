@@ -1,0 +1,2 @@
+- Replace the hardcoded instance of pv system with pvlib calculations. this way the system can work off of physics based calculations of how a pv system turns irradiance into photovaltaic power output instead of naively assuming a 15% loss.
+- 
