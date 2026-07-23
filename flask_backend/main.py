@@ -1,12 +1,16 @@
+from pathlib import Path
+
 import joblib
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-with open("models/xgboost_model.joblib", "rb") as f:
+MODELS_DIR = Path(__file__).parent / "models"
+
+with open(MODELS_DIR / "xgboost_model.joblib", "rb") as f:
     xgb_model = joblib.load(f)
 
-with open("models/random_forest_model.joblib", "rb") as f:
+with open(MODELS_DIR / "random_forest_model.joblib", "rb") as f:
     rf_model = joblib.load(f)
 
 
