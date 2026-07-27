@@ -20,6 +20,7 @@ params = {
 	"start_date": "2023-07-25",
 	"end_date": "2026-07-25",
 	"hourly": ["temperature_2m", "relative_humidity_2m", "wind_speed_10m", "sunshine_duration", "is_day", "direct_radiation", "diffuse_radiation", "direct_normal_irradiance", "shortwave_radiation"],
+	"models": "best_match",
 }
 responses = openmeteo.weather_api(url, params = params)
 
