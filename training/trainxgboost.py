@@ -7,7 +7,7 @@ from matplotlib import pyplot
 from sklearn.metrics import root_mean_squared_error
 from sklearn.metrics import mean_absolute_error
 
-csv_path = path.Path(__file__).with_name("merged_data.csv")
+csv_path = path.Path(__file__).with_name("ingestion/csv/merged_data.csv")
 df = pd.read_csv(csv_path,sep=",")
 
 target_variable ="cams_ghi"
