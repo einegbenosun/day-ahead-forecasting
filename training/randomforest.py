@@ -8,17 +8,16 @@ from sklearn.metrics import mean_absolute_error
 from matplotlib import pyplot
 
 
-
-csv_path = path.Path(__file__).with_name("merged_data.csv")
+#https://stackoverflow.com/questions/32470543/open-file-in-another-directory-python
+csv_path = path.Path(__file__).parents[1] / "ingestion" / "csv" / "merged_data.csv"
 df = pd.read_csv(csv_path,sep=",")
-
 
 target_variable ="cams_ghi"
 from_cams = [target_variable,"cams_bhi", "cams_dhi", "cams_bni", "cams_reliability"]
 target = df[target_variable]
 directly_relevant_features = ["diffuse_radiation"]
-relevant_features = ["DAY","YEAR","is_day","direct_radiation","shortwave_radiation","diffuse_radiation","direct_normal_irradiance","global_tilted_irradiance","shortwave_radiation"]
-noise = ["YEAR","is_day","DAY"]
+relevant_features = ["DAY","YEAR","is_day","direct_radiation","diffuse_radiation","direct_normal_irradiance","shortwave_radiation"]
+noise = ["YEAR","is_day"]
 features = df.drop(columns= from_cams + directly_relevant_features + noise)
 
 print(features.columns.tolist())
@@ -27,8 +26,8 @@ x = features
 y = target
 
 #https://stats.stackexchange.com/questions/568897/random-forest-regressor-accuracy-reduces-when-the-input-data-is-not-shuffled
-X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.2, random_state=100, shuffle=False)
-model = RandomForestRegressor()
+X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.2, shuffle=False)
+model = RandomForestRegressor(random_state=42)
 
 #https://stackoverflow.com/questions/17197492/is-there-a-library-function-for-root-mean-square-error-rmse-in-python
 
