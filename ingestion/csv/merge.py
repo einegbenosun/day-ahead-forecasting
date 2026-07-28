@@ -37,5 +37,5 @@ merged_df["Hour"] = pd.to_numeric(merged_df["Hour"], errors="coerce")
 
 
 print(merged_df.info())
-merged_df.to_csv("merged_data.csv", index=False)
+merged_df.to_csv("ingestion/csv/merged_data.csv", index=False)
 

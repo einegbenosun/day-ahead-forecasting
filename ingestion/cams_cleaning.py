@@ -1,9 +1,16 @@
 from pathlib import Path
 import pandas as pd
 
+# skiping to head the csv file and removing # in the heading of the cams csv file
 csv_path = Path(__file__).with_name("cams.csv")
-df = pd.read_csv(csv_path,sep=";",comment="#")
+with open(csv_path, "r") as df:
+    lines = df.readlines()
+line_index = 42
+lines[line_index] = lines[line_index].lstrip("# ")
 
+with open(csv_path, "w") as df:
+    df.writelines(lines)
+df = pd.read_csv(csv_path, sep=";", comment="#")
 
 #useful columns: Observation Period, GHI, BHI, DHI, BNI, RELIABILITY
 clean_cams_df = df[["Observation period", "GHI", "BHI", "DHI", "BNI", "Reliability"]]
@@ -16,5 +23,5 @@ clean_cams_df = clean_cams_df.rename(columns={"Observation period": "timestamp",
 #removing second half of the timestamp and replacing it with ":00" to match openmeteo timestamp format
 clean_cams_df["timestamp"] = clean_cams_df["timestamp"].str.split("/").str[0]
 clean_cams_df["timestamp"] = clean_cams_df["timestamp"].str.split(":").str[0] + ":00"
-clean_cams_df.to_csv("cams_cleaned.csv", index=False) 
+clean_cams_df.to_csv("ingestion/csv/cams_cleaned.csv", index=False) 
 print((clean_cams_df.columns.tolist()))
