@@ -66,7 +66,8 @@ print(f"RMSE: {rmse}")
 print(f"MAE: {mae}")
 
 
-joblib.dump(model, "models/xgboost_model.joblib")
+model_path = path.Path(__file__).parents[1] / "models"
+joblib.dump(model, model_path / "xgboost_model.joblib")
 
 #importance = pd.Series(
 #    model.feature_importances_,
