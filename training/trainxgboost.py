@@ -6,51 +6,75 @@ from xgboost import XGBRegressor
 from matplotlib import pyplot
 from sklearn.metrics import root_mean_squared_error
 from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import TimeSeriesSplit, cross_validate
 
-csv_path = path.Path(__file__).with_name("ingestion/csv/merged_data.csv")
+
+#https://stackoverflow.com/questions/32470543/open-file-in-another-directory-python
+csv_path = path.Path(__file__).parents[1] / "ingestion" / "csv" / "merged_data.csv"
 df = pd.read_csv(csv_path,sep=",")
 
 target_variable ="cams_ghi"
 from_cams = [target_variable,"cams_bhi", "cams_dhi", "cams_bni", "cams_reliability"]
 target = df[target_variable]
 directly_relevant_features = ["diffuse_radiation"]
-#relevant_features = ["DAY","YEAR","is_day","direct_radiation","shortwave_radiation","diffuse_radiation","direct_normal_irradiance","global_tilted_irradiance","shortwave_radiation"]
-noise = ["YEAR","is_day","DAY"]
+noise = ["YEAR","is_day"]
 features = df.drop(columns= from_cams + directly_relevant_features + noise)
 
-print(features.columns.tolist())
+#print(features.columns.tolist())
 
-X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=.2, random_state=100, shuffle=False)
+X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=.2, shuffle=False)
 #https://www.kaggle.com/code/prashant111/a-guide-on-xgboost-hyperparameters-tuning
-model = XGBRegressor(n_estimators=1500, learning_rate=0.008, max_depth=5, alpha=6)
+model = XGBRegressor(random_state=42, n_estimators=1500, learning_rate=0.008, max_depth=5, alpha=6)
+tscv = TimeSeriesSplit(n_splits=5)
+
+
 model.fit(X_train, y_train)
 # make predictions
 
-
-print(f"R-squared score(TEST): {model.score(X_test, y_test)}")
-print(f"R-squared score(TRAIN): {model.score(X_train, y_train)}\n")
+print("XGBoost Model Training")
+print("------------------------")
 rmse = root_mean_squared_error(y_test, model.predict(X_test))
 mae = mean_absolute_error(y_test, model.predict(X_test))
 
 #print(f"Root Mean Squared Error: {rmse}")
 #print(f"Mean Absolute Error: {mae}")
+print(f"R²(TEST): {model.score(X_test, y_test)}")
+print(f"R²(TRAIN): {model.score(X_train, y_train)}\n")
+
 feature_importance = []
 feature_importance.append(model.feature_importances_)
-print(f"RMSE: {rmse}\n")
-print(f"MAE: {mae}\n")
 print("Feature importance:")
 for i in features.columns.tolist():
     print(f"{features[i].name}: {feature_importance[0][features.columns.get_loc(i)]}")
 
-#joblib.dump(model, "xgboost_model.joblib")
+cv_results = cross_validate(
+    model, features, target, cv=tscv,
+    scoring=["r2", "neg_root_mean_squared_error", "neg_mean_absolute_error"]
+)
+cv_r2 = cv_results["test_r2"]
+cv_rmse = -cv_results["test_neg_root_mean_squared_error"]
+cv_mae = -cv_results["test_neg_mean_absolute_error"]
 
-importance = pd.Series(
-    model.feature_importances_,
-    index=features.columns
-).sort_values()
+print("\nR² per fold:", cv_r2)
+print(f"R² mean ± std: {cv_r2.mean():.4f} ± {cv_r2.std():.4f}")
+print("RMSE per fold:", cv_rmse)
+print(f"RMSE mean ± std: {cv_rmse.mean():.2f} ± {cv_rmse.std():.2f}")
+print("MAE per fold:", cv_mae)
+print(f"MAE mean ± std: {cv_mae.mean():.2f} ± {cv_mae.std():.2f}\n")
 
-importance.plot(kind="barh", figsize=(9, 6), title="XGBoost Feature Importances")
+print(f"RMSE: {rmse}")
+print(f"MAE: {mae}")
 
-pyplot.xlabel("Importance")
-pyplot.tight_layout()
-pyplot.show()
+
+joblib.dump(model, "models/xgboost_model.joblib")
+
+#importance = pd.Series(
+#    model.feature_importances_,
+#    index=features.columns
+#).sort_values()
+
+#importance.plot(kind="barh", figsize=(9, 6), title="XGBoost Feature Importances")
+
+#pyplot.xlabel("Importance")
+#pyplot.tight_layout()
+#pyplot.show()

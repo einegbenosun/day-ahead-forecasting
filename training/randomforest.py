@@ -20,7 +20,7 @@ directly_relevant_features = ["diffuse_radiation"]
 noise = ["YEAR","is_day"]
 features = df.drop(columns= from_cams + directly_relevant_features + noise)
 
-print(features.columns.tolist())
+#print(features.columns.tolist())
 
 #https://stats.stackexchange.com/questions/568897/random-forest-regressor-accuracy-reduces-when-the-input-data-is-not-shuffled
 X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.2, shuffle=False)
@@ -30,11 +30,15 @@ model = RandomForestRegressor(random_state=42, max_depth=10)
 
 
 model.fit(X_train, y_train)
+print("Random Forest Model Training")
+print("------------------------")
 
 #https://stackoverflow.com/questions/17197492/is-there-a-library-function-for-root-mean-square-error-rmse-in-python
 rmse = root_mean_squared_error(y_test, model.predict(X_test))
 mae = mean_absolute_error(y_test, model.predict(X_test))
 
+print(f"R²(TEST): {model.score(X_test, y_test)}")
+print(f"R²(TRAIN): {model.score(X_train, y_train)}\n")
 
 feature_importance = []
 feature_importance.append(model.feature_importances_)
@@ -57,8 +61,6 @@ print(f"RMSE mean ± std: {cv_rmse.mean():.2f} ± {cv_rmse.std():.2f}")
 print("MAE per fold:", cv_mae)
 print(f"MAE mean ± std: {cv_mae.mean():.2f} ± {cv_mae.std():.2f}\n")
 
-print(f"R²(TEST): {model.score(X_test, y_test)}")
-print(f"R²(TRAIN): {model.score(X_train, y_train)}\n")
 print(f"RMSE: {rmse}")
 print(f"MAE: {mae}")
 
