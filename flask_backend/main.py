@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-MODELS_DIR = Path(__file__).parent / "models"
+MODELS_DIR = Path(__file__).resolve.parent[1] / "models"
 
 with open(MODELS_DIR / "xgboost_model.joblib", "rb") as f:
     xgb_model = joblib.load(f)
@@ -31,10 +31,10 @@ def xgbpredict():
                             'shortwave_radiation',
                             'direct_radiation',
                             'direct_normal_irradiance',
-                            'global_tilted_irradiance',
                             'sunshine_duration',
                             'Hour',
-                            'MONTH']
+                            'MONTH',
+                            'DAY']
 
 
         input_data = [[request_data[feature] for feature in required_features]]
@@ -55,8 +55,7 @@ def xgbpredict():
             request_data["shortwave_radiation"] +
             request_data["direct_radiation"] +
             request_data["diffuse_radiation"] +
-            request_data["direct_normal_irradiance"] +
-            request_data["global_tilted_irradiance"]
+            request_data["direct_normal_irradiance"]
         )
         if irradiance_sum <= 0:
             prediction = float(0)
@@ -82,10 +81,10 @@ def rfpredict():
                             'shortwave_radiation',
                             'direct_radiation',
                             'direct_normal_irradiance',
-                            'global_tilted_irradiance',
                             'sunshine_duration',
                             'Hour',
-                            'MONTH']
+                            'MONTH',
+                            'DAY']
 
 
         input_data = [[request_data[feature] for feature in required_features]]
@@ -104,8 +103,7 @@ def rfpredict():
             request_data["shortwave_radiation"] +
             request_data["direct_radiation"] +
             request_data["diffuse_radiation"] +
-            request_data["direct_normal_irradiance"] +
-            request_data["global_tilted_irradiance"]
+            request_data["direct_normal_irradiance"]
         )
         if irradiance_sum <= 0:
             prediction = float(0)
