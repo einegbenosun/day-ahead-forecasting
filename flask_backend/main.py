@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-MODELS_DIR = Path(__file__).resolve.parent[1] / "models"
+MODELS_DIR = Path(__file__).resolve().parent[1] / "models"
 
 with open(MODELS_DIR / "xgboost_model.joblib", "rb") as f:
     xgb_model = joblib.load(f)
