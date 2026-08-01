@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-MODELS_DIR = Path(__file__).resolve().parent[1] / "models"
+MODELS_DIR = Path(__file__).resolve().parents[1]/ "models"
 
 with open(MODELS_DIR / "xgboost_model.joblib", "rb") as f:
     xgb_model = joblib.load(f)
@@ -87,7 +87,7 @@ def rfpredict():
                             'DAY']
 
 
-        input_data = [[request_data[feature] for feature in required_features]]
+        
         #Invalid/No data
         if not required_features:
             return jsonify({"error": "No input data provided"}), 400
@@ -96,6 +96,7 @@ def rfpredict():
         if not all(feature in required_features for feature in required_features):
             return jsonify({"error": "Missing required features"}), 400
         
+        input_data = [[request_data[feature] for feature in required_features]]
         
         rf_prediction = rf_model.predict(input_data)
         prediction = float(rf_prediction[0])
