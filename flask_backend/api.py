@@ -7,6 +7,10 @@ from retry_requests import retry
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+import requests
+
+from pvlib import solarposition, irradiance, temperature, pvsystem, inverter, atmosphere
+
 app = Flask(__name__)
 #https://stackoverflow.com/questions/25594893/how-to-enable-cors-in-flask
 CORS(app)
@@ -60,8 +64,7 @@ hourly_shortwave_radiation = hourly.Variables(21).ValuesAsNumpy()
 hourly_direct_radiation = hourly.Variables(22).ValuesAsNumpy()
 hourly_diffuse_radiation = hourly.Variables(23).ValuesAsNumpy()
 hourly_direct_normal_irradiance = hourly.Variables(24).ValuesAsNumpy()
-hourly_global_tilted_irradiance = hourly.Variables(25).ValuesAsNumpy()
-hourly_terrestrial_radiation = hourly.Variables(26).ValuesAsNumpy()
+hourly_terrestrial_radiation = hourly.Variables(25).ValuesAsNumpy()
 
 hourly_data = {
 	"date": pd.date_range(
@@ -98,7 +101,6 @@ hourly_data["shortwave_radiation"] = hourly_shortwave_radiation
 hourly_data["direct_radiation"] = hourly_direct_radiation
 hourly_data["diffuse_radiation"] = hourly_diffuse_radiation
 hourly_data["direct_normal_irradiance"] = hourly_direct_normal_irradiance
-hourly_data["global_tilted_irradiance"] = hourly_global_tilted_irradiance
 hourly_data["terrestrial_radiation"] = hourly_terrestrial_radiation
 
 df = pd.DataFrame(data = hourly_data)
@@ -109,7 +111,13 @@ import requests
 api_url = "http://main:5000/rfpredict"
 time = hourly_data["date"]
 
-kwp = 1000 #to get W/m² to KW/M
+PV_LATITUDE = params["latitude"]
+PV_LONGITUDE = params["longitude"]
+PV_ALTITUDE = -999
+PV_SURFACE_TILT = 37
+PV_SURFACE_AZIMUTH = 180  
+PV_PDC0 = 1000  # W, i.e. 1 kWp installed capacity
+PV_GAMMA_PDC = -0.004  # per °C, typical crystalline-silicon temperature coefficient
 
 def get_predictions():
     predictions = []
