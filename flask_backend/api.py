@@ -113,7 +113,7 @@ time = hourly_data["date"]
 
 PV_LATITUDE = params["latitude"]
 PV_LONGITUDE = params["longitude"]
-PV_ALTITUDE = -999
+PV_ALTITUDE = response.Elevation()
 PV_SURFACE_TILT = 37
 PV_SURFACE_AZIMUTH = 180  
 PV_PDC0 = 1000  # W, i.e. 1 kWp installed capacity
@@ -144,6 +144,21 @@ def get_predictions():
         predictions.append(prediction)
     return predictions
 
+def pv_light_to_panel():
+    solpos = solarposition.get_solarposition(time=time,latitude=PV_LATITUDE, longitude= PV_LONGITUDE)
+    zenith = solpos["zenith"]
+    azimuth = solpos["azimuth"]
+
+    dhi = hourly_data["diffuse_radiation"]
+    ghi = hourly_data["shortwave_radiation"]
+    dni = hourly_data["direct_normal_irradiance"]
+    extra = irradiance.get_extra_radiation(time)
+
+    solar_to_panel = irradiance.get_total_irradiance(surface_tilt=PV_SURFACE_TILT, solar_zenith=zenith,solar_azimuth = azimuth, surface_azimuth= PV_SURFACE_AZIMUTH, dni = dni, ghi = ghi, dhi = dhi, dni_extra=extra, model="perez" )
+    return solar_to_panel["poa_global"]
+
+
+
 @app.route("/date", methods=["GET"])
 def today():
     first_date = df.iloc[0]["date"]
@@ -172,5 +187,6 @@ def home():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",port=5001)
+    print(pv_light_to_panel())
+    #app.run(host="0.0.0.0",port=5001)
     
