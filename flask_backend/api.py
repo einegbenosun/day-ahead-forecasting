@@ -153,10 +153,28 @@ def pv_light_to_panel():
     ghi = hourly_data["shortwave_radiation"]
     dni = hourly_data["direct_normal_irradiance"]
     extra = irradiance.get_extra_radiation(time)
-
+                                                                                                                                                              
     solar_to_panel = irradiance.get_total_irradiance(surface_tilt=PV_SURFACE_TILT, solar_zenith=zenith,solar_azimuth = azimuth, surface_azimuth= PV_SURFACE_AZIMUTH, dni = dni, ghi = ghi, dhi = dhi, dni_extra=extra, model="perez" )
-    return solar_to_panel["poa_global"]
+    panel_irradiance = solar_to_panel["poa_global"]
+    return panel_irradiance
 
+def get_cell_temp(panel_irradiance):
+    wind_speed = hourly_wind_speed_10m/3.6
+    cell_temp = temperature.faiman(poa_global=panel_irradiance, temp_air=hourly_temperature_2m, wind_speed=wind_speed)
+    return cell_temp
+
+def get_dc_power(cell_temp, panel_irradiance):
+    panel_power = pvsystem.pvwatts_dc(panel_irradiance,cell_temp,PV_PDC0,PV_GAMMA_PDC)#
+    return panel_power
+
+def dc_to_ac(dc_power):
+    ac_power = inverter.pvwatts(dc_power, PV_PDC0)
+    return ac_power
+def power_loss(ac_power):
+    loss = pvsystem.pvwatts_losses()
+    final_power = ac_power * (1 - loss/100)
+    final_power = final_power.rename("ac_power_w")
+    return final_power
 
 
 @app.route("/date", methods=["GET"])
@@ -187,6 +205,11 @@ def home():
 
 
 if __name__ == "__main__":
-    print(pv_light_to_panel())
+    panel_irradiance = pv_light_to_panel()
+    cell_temp = get_cell_temp(panel_irradiance)
+    dc_power = get_dc_power(cell_temp, panel_irradiance)
+    ac_power = dc_to_ac(dc_power)
+    final_power = power_loss(ac_power)
+    print(final_power)
     #app.run(host="0.0.0.0",port=5001)
     
