@@ -8,6 +8,7 @@ RUN pip install -r ./requirements.txt
 
 COPY flask_backend ./flask_backend
 
+COPY models ./models
 EXPOSE 5000
 
 CMD ["python","flask_backend/main.py"]

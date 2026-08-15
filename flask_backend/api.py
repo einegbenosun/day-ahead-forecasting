@@ -6,6 +6,7 @@ import requests_cache
 from retry_requests import retry
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import numpy as np
 
 import requests
 
@@ -23,6 +24,7 @@ openmeteo = openmeteo_requests.Client(session = retry_session)
 # Make sure all required weather variables are listed here
 # The order of variables in hourly or daily is important to assign them correctly below
 url = "https://api.open-meteo.com/v1/forecast"
+
 params = {
 	"latitude": 51.8859,
 	"longitude": -8.5332,
@@ -106,9 +108,11 @@ hourly_data["terrestrial_radiation"] = hourly_terrestrial_radiation
 df = pd.DataFrame(data = hourly_data)
 #print("\nHourly data\n", hourly_dataframe)
 
-import requests
 
 api_url = "http://main:5000/rfpredict"
+
+#api_url = "http://localhost:5000/rfpredict"
+
 time = hourly_data["date"]
 
 PV_LATITUDE = params["latitude"]
@@ -119,7 +123,7 @@ PV_SURFACE_AZIMUTH = 180
 PV_PDC0 = 1000  # W, i.e. 1 kWp installed capacity
 PV_GAMMA_PDC = -0.004  # per °C, typical crystalline-silicon temperature coefficient
 
-def get_predictions():
+def get_predicted_ghi():
     predictions = []
     for i in range(24):
         row = df.iloc[i].to_dict()
@@ -134,13 +138,10 @@ def get_predictions():
         
 
         api_response = requests.post(api_url, json=row)
-        api_response = api_response
         #print(row)
         
         #print(api_response.json()) 
         prediction = api_response.json()
-        prediction = float(prediction) / 1000 * 0.85 #assumes a pv panel loses 15% of solar irradiance
-        
         predictions.append(prediction)
     return predictions
 
@@ -148,10 +149,12 @@ def pv_light_to_panel():
     solpos = solarposition.get_solarposition(time=time,latitude=PV_LATITUDE, longitude= PV_LONGITUDE)
     zenith = solpos["zenith"]
     azimuth = solpos["azimuth"]
+    ghi = np.array(get_predicted_ghi())
+    erbs = irradiance.erbs(ghi,zenith,time)
+    dhi = erbs["dhi"]
+    
 
-    dhi = hourly_data["diffuse_radiation"]
-    ghi = hourly_data["shortwave_radiation"]
-    dni = hourly_data["direct_normal_irradiance"]
+    dni = erbs["dni"]
     extra = irradiance.get_extra_radiation(time)
                                                                                                                                                               
     solar_to_panel = irradiance.get_total_irradiance(surface_tilt=PV_SURFACE_TILT, solar_zenith=zenith,solar_azimuth = azimuth, surface_azimuth= PV_SURFACE_AZIMUTH, dni = dni, ghi = ghi, dhi = dhi, dni_extra=extra, model="perez" )
@@ -176,6 +179,13 @@ def power_loss(ac_power):
     final_power = final_power.rename("ac_power_w")
     return final_power
 
+def get_final_power():
+    panel_irradiance = pv_light_to_panel()
+    cell_temp = get_cell_temp(panel_irradiance)
+    dc_power = get_dc_power(cell_temp, panel_irradiance)
+    ac_power = dc_to_ac(dc_power)
+    final_power = power_loss(ac_power)
+    return final_power.tolist()
 
 @app.route("/date", methods=["GET"])
 def today():
@@ -184,12 +194,20 @@ def today():
 
 @app.route("/predict", methods=["GET"])	
 def predict():
-    return jsonify(get_predictions()), 200
+    try:
+        return jsonify(get_final_power()), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route("/total", methods=["GET"])
 def total_prediction():
-    total = (sum(get_predictions()))
-    return jsonify(total), 200
+    try:
+        total = (sum(get_final_power()))
+        return jsonify(total), 200
+    except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    
 
 @app.route("/params", methods=["GET"])
 def loc():
@@ -205,11 +223,7 @@ def home():
 
 
 if __name__ == "__main__":
-    panel_irradiance = pv_light_to_panel()
-    cell_temp = get_cell_temp(panel_irradiance)
-    dc_power = get_dc_power(cell_temp, panel_irradiance)
-    ac_power = dc_to_ac(dc_power)
-    final_power = power_loss(ac_power)
-    print(final_power)
-    #app.run(host="0.0.0.0",port=5001)
+
+    #print(get_final_power())
+    app.run(host="0.0.0.0",port=5001)
     

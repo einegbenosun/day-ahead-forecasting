@@ -50,7 +50,7 @@ function App() {
 
         
           <p>
-            <strong>Total forecast:</strong> {Number(data.total).toFixed(2)}kWp
+            <strong>Total forecast:</strong> {Number(data.total/1000).toFixed(2)}kWh
           </p>
 
           <h3>24-Hour Predictions</h3>
