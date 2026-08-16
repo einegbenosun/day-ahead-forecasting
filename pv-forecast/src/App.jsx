@@ -1,10 +1,16 @@
 import { useState } from "react";
 import "./App.css";
 import axios from "axios";
+import { AreaChart, Area, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const chartData = data
+  ? data.predictions.map((value, index) => ({ hour: `${index}:00`, watts: Number(value) }))
+  : [];
+  const maxPower = data ? Math.max(...data.predictions) : 0;
+
 
   const fetchAPI = async () => {
     setLoading(true);
@@ -54,18 +60,25 @@ function App() {
           </p>
 
           <h3>24-Hour Predictions</h3>
-          <div className="prediction-grid">
+          <div className="bar-list">
             {data.predictions.map((value, index) => (
-              <div className="prediction-box" key={index}>
-                <span>{index}:00</span>
-                <strong>{Number(value).toFixed(2)}</strong>
-              </div>
-            ))}
+              <div className="bar-row" key={index}>
+                <span className="bar-hour">{index}:00</span>
+                <div className="bar-track">
+                  <div
+                    className="bar-fill"
+                    style={{ width: `${maxPower > 0 ? (value / maxPower) * 100 : 0}%` }}
+                  />
+                </div>
+                <span className="bar-value">{Number(value).toFixed(2)}W</span>
           </div>
-        </div>
+        ))}
+      </div>
+    </div>
+  )}
 
 
-      )}
+
     </main>
   );
 }
