@@ -17,14 +17,15 @@ function App() {
 
     const paramsResponse = await axios.get("http://localhost:5001/params");
     const predictionsResponse = await axios.get("http://localhost:5001/predict");
-    const totalResponse = await axios.get("http://localhost:5001/total");
     const dateResponse = await axios.get("http://localhost:5001/date");
+
+    const total = predictionsResponse.data.reduce((sum,value) => sum + value, 0)
 
     setData({
       longitude: paramsResponse.data.longitude,
       latitude: paramsResponse.data.latitude,
       predictions: predictionsResponse.data,
-      total: totalResponse.data,
+      total: total,
       date: dateResponse.data,
     
     });
