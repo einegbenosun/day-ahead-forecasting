@@ -5,7 +5,8 @@ import { AreaChart, Area, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 
 function App() {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(null);
+  const [error, setError] = useState(null)
   const chartData = data
   ? data.predictions.map((value, index) => ({ hour: `${index}:00`, watts: Number(value) }))
   : [];
@@ -14,24 +15,30 @@ function App() {
 
   const fetchAPI = async () => {
     setLoading(true);
+    setError(null)
 
-    const paramsResponse = await axios.get("http://localhost:5001/params");
-    const predictionsResponse = await axios.get("http://localhost:5001/predict");
-    const dateResponse = await axios.get("http://localhost:5001/date");
+    try{
+      const paramsResponse = await axios.get("http://localhost:5001/params");
+      const predictionsResponse = await axios.get("http://localhost:5001/predict");
+      const dateResponse = await axios.get("http://localhost:5001/date");
 
-    const total = predictionsResponse.data.reduce((sum,value) => sum + value, 0)
+      const total = predictionsResponse.data.reduce((sum,value) => sum + value, 0)
 
-    setData({
-      longitude: paramsResponse.data.longitude,
-      latitude: paramsResponse.data.latitude,
-      predictions: predictionsResponse.data,
-      total: total,
-      date: dateResponse.data,
-    
-    });
+      setData({
+        longitude: paramsResponse.data.longitude,
+        latitude: paramsResponse.data.latitude,
+        predictions: predictionsResponse.data,
+        total: total,
+        date: dateResponse.data,
+      
+      });
+  } catch (err){
+  setError("Couldn't load forecast data - check that backend is running and try again.");
 
-    setLoading(false);
-  };
+  } finally{
+  setLoading(false);
+  }
+};
 
   return (
     <main className="page">
@@ -43,6 +50,9 @@ function App() {
       <button onClick={fetchAPI}>
         {loading ? "Loading..." : "Access Forecast Data"}
       </button>
+
+      {error && <p className="error-message">{error}</p>}
+
 
       {data && (
         <div className="card">

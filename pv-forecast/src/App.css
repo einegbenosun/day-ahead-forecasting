@@ -140,3 +140,8 @@ button:hover {
   text-align: right;
   font-size: 0.9rem;
 }
+
+.error-message {
+  color: #ff6b6b;
+  margin-top: 1rem;
+}
