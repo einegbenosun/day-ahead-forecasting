@@ -7,7 +7,7 @@ from matplotlib import pyplot
 from sklearn.metrics import root_mean_squared_error
 from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import TimeSeriesSplit, cross_validate
-
+from baseline import skill_score, compute_baseline_metrics
 
 #https://stackoverflow.com/questions/32470543/open-file-in-another-directory-python
 csv_path = path.Path(__file__).parents[1] / "ingestion" / "csv" / "merged_data.csv"
@@ -64,6 +64,12 @@ print(f"MAE mean ± std: {cv_mae.mean():.2f} ± {cv_mae.std():.2f}\n")
 
 print(f"RMSE: {rmse}")
 print(f"MAE: {mae}")
+
+baseline_rmse, baseline_mae, baseline_r2_train, baseline_r2_test = compute_baseline_metrics()
+xgskill_rmse= skill_score(rmse, baseline_rmse)
+xgskill_mae = skill_score(mae, baseline_mae)
+
+print(f"Skill Score:\n RMSE = {xgskill_rmse}\n MAE = {xgskill_mae}")
 
 
 model_path = path.Path(__file__).parents[1] / "models"
