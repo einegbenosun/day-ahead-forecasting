@@ -109,9 +109,9 @@ df = pd.DataFrame(data = hourly_data)
 #print("\nHourly data\n", hourly_dataframe)
 
 
-api_url = "http://main:5000/rfpredict"
+#api_url = "http://main:5000/rfpredict"
 
-#api_url = "http://localhost:5000/rfpredict"
+api_url = "http://localhost:5000/rfpredict"
 
 time = hourly_data["date"]
 
@@ -137,7 +137,7 @@ def get_predicted_ghi():
 
         
 
-        api_response = requests.post(api_url, json=row)
+        api_response = requests.post(api_url, json=row, timeout=10)
         #print(row)
         
         #print(api_response.json()) 
@@ -225,5 +225,5 @@ def home():
 if __name__ == "__main__":
 
     #print(get_final_power())
-    app.run(host="0.0.0.0",port=5001)
+    app.run(host="127.0.0.1",port=5001)
     
