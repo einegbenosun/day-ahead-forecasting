@@ -1,8 +1,12 @@
 # Model Training
-To use the Random Forest model in in the Flask API, remove the comment(#) from line 51 in `randomforest.py`
-- `joblib.dump(model, "random_forest_model.joblib")`
+Run both from the repository root:
+```powershell
+python training/randomforest.py
+python training/trainxgboost.py
+```
 
-To use the XGBoost model in the Flask API, remove the comment(#) from line 45 in `trainxgboost.py`
-- `joblib.dump(model, "random_forest_model.joblib")`
+`randomforest.py` and `trainxgboost.py` train the Random Forest and XGBoost GHI models and save them automatically to `models/random_forest_model.joblib` and `models/xgboost_model.joblib`.
 
-This will create joblib files for both models that should be replaced in `flask_backend/models'
+Both use a fixed `random_state`, so retraining on unchanged data reproduces equivalent results. Retraining overwrites the `models/*.joblib` files used by the Flask API — rebuild the `main` container (`docker compose up -d --build`) for it to pick up the new files.
+
+`baseline.py` computes a persistence-model baseline used for the skill-score printed by each of the scripts above, and doesn't need to be run on its own.
