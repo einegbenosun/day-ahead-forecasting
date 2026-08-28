@@ -57,21 +57,21 @@ cv_rmse = -cv_results["test_neg_root_mean_squared_error"]
 cv_mae = -cv_results["test_neg_mean_absolute_error"]
 
 print("\nR² per fold:", cv_r2)
-print(f"R² mean ± std: {cv_r2.mean():.4f}W/m² ± {cv_r2.std():.4f}W/m²")
+print(f"R² mean ± std: {cv_r2.mean():.4f} ± {cv_r2.std():.4f}")
 print("RMSE per fold:", cv_rmse)
-print(f"RMSE mean ± std: {cv_rmse.mean():.2f}W/m ± {cv_rmse.std():.2f}W/m")
+print(f"RMSE mean ± std: {cv_rmse.mean():.2f}W/m² ± {cv_rmse.std():.2f}W/m²")
 print("MAE per fold:", cv_mae)
-print(f"MAE mean ± std: {cv_mae.mean():.2f}W/m ± {cv_mae.std():.2f}\nW/m")
+print(f"MAE mean ± std: {cv_mae.mean():.2f}W/m² ± {cv_mae.std():.2f}W/m²\n")
 
 nrmse = (rmse / y_test.max()) * 100
-print(f"RMSE: {rmse}W/m")
+print(f"RMSE: {rmse}W/m²")
 print(f"nRMSE: {nrmse:.2f}%")
-print(f"MAE: {mae}W/m")
+print(f"MAE: {mae}W/m²")
 baseline_rmse, baseline_mae, baseline_r2_train, baseline_r2_test, baseline_nrmse = compute_baseline_metrics()
 rfskill_rmse= skill_score(rmse, baseline_rmse)
 rfskill_mae = skill_score(mae, baseline_mae)
 
-print(f"Skill Score:\n RMSE = {rfskill_rmse}W/m\n MAE = {rfskill_mae}W/m")
+print(f"Skill Score:\n RMSE = {rfskill_rmse}\n MAE = {rfskill_mae}")
 joblib.dump(model, "models/random_forest_model.joblib")
 
 
