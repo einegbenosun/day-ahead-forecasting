@@ -109,9 +109,9 @@ df = pd.DataFrame(data = hourly_data)
 #print("\nHourly data\n", hourly_dataframe)
 
 
-#api_url = "http://main:5000/rfpredict"
+api_url = "http://main:5000/rfpredict"
 
-api_url = "http://localhost:5000/rfpredict"
+#api_url = "http://localhost:5000/rfpredict"
 
 time = hourly_data["date"]
 
