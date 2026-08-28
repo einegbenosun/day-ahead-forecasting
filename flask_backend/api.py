@@ -211,7 +211,16 @@ def total_prediction():
 
 @app.route("/params", methods=["GET"])
 def loc():
-    return jsonify(params), 200
+    response = dict(params)
+    response["pv_config"] = {
+        "altitude_m": PV_ALTITUDE,
+        "panel_tilt_deg": PV_SURFACE_TILT,
+        "panel_direction": PV_SURFACE_AZIMUTH,
+        "panel_capacity_w": PV_PDC0,
+        "temp_coefficient_per_c": PV_GAMMA_PDC,
+        "pv_loss":pvsystem.pvwatts_losses()
+    }
+    return jsonify(response), 200
     
 
 #print(predictions)

@@ -30,10 +30,10 @@ function App() {
         predictions: predictionsResponse.data,
         total: total,
         date: dateResponse.data,
-      
+        pvConfig: paramsResponse.data.pv_config,
       });
   } catch (err){
-  setError("Couldn't load forecast data - check that backend is running and try again.");
+  setError(`Could not load forecast data: ${err.message}.`);
 
   } finally{
   setLoading(false);
@@ -52,6 +52,17 @@ function App() {
       </button>
 
       {error && <p className="error-message">{error}</p>}
+
+      {data?.pvConfig &&(
+        <div className="card">
+          <h2>System Assumptions</h2>
+          <p><strong>Capacity:</strong> {(data.pvConfig.panel_capacity_w).toFixed(2)}W</p>
+          <p><strong>Tilt:</strong> {data.pvConfig.panel_tilt_deg}°</p>
+          <p><strong>Azimuth:</strong> {data.pvConfig.panel_direction}°</p>
+          <p><strong>Elevation:</strong> {(data.pvConfig.altitude_m).toFixed(2)}m</p>
+          <p><strong>PV Watt Losses:</strong> {(data.pvConfig.pv_loss).toFixed(2)}% </p>
+        </div>
+      )}
 
 
       {data && (
@@ -87,6 +98,8 @@ function App() {
       </div>
     </div>
   )}
+  
+
 
 
 
