@@ -1,2 +1,0 @@
-Checking potential other datasets: 
-ruled out pvgis - it only provides data  up until 2024 - which still could be used to test and train the models - but pointless as it doesnt provide any data for ireland
